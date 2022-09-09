@@ -58,7 +58,7 @@ namespace VMATTBIautoPlan
             numBeams = beams;
             ebmpArc = new ExternalBeamMachineParameters(linac, energy, 600, "ARC", null);
             //AP/PA beams always use 6X
-            ebmpStatic = new ExternalBeamMachineParameters(linac, "6X", 600, "STATIC", null);
+            ebmpStatic = new ExternalBeamMachineParameters(linac, energy, 600, "STATIC", null);
             //copy the calculation model
             calculationModel = calcModel;
             useFlash = flash;
@@ -147,7 +147,7 @@ namespace VMATTBIautoPlan
                 }
             }
             plan.SetCalculationModel(CalculationType.PhotonVolumeDose, calculationModel);
-            plan.SetCalculationModel(CalculationType.PhotonVMATOptimization, "PO_15605");
+            plan.SetCalculationModel(CalculationType.PhotonVMATOptimization, "PO_16010");
 
             //reference point can only be added for a plan that IS CURRENTLY OPEN
             //plan.AddReferencePoint(selectedSS.Structures.First(x => x.Id == "TS_PTV_VMAT"), null, "VMAT TBI", "VMAT TBI");
