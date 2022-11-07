@@ -58,7 +58,7 @@ namespace VMATTBIautoPlan
             numBeams = beams;
             ebmpArc = new ExternalBeamMachineParameters(linac, energy, 600, "ARC", null);
             //AP/PA beams always use 6X
-            ebmpStatic = new ExternalBeamMachineParameters(linac, energy, 600, "STATIC", null);
+            ebmpStatic = new ExternalBeamMachineParameters(linac, "6X", 600, "STATIC", null);
             //copy the calculation model
             calculationModel = calcModel;
             useFlash = flash;
