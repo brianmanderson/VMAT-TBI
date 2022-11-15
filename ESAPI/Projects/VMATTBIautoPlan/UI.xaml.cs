@@ -134,6 +134,7 @@ namespace VMATTBIautoPlan
         public List<string> isoNames = new List<string> { };
         Tuple<int, DoseValue> prescription = null;
         bool useFlash = false;
+        bool useFlashlegs = false;
         string flashType = "";
         List<Structure> jnxs = new List<Structure> { };
         Structure flashStructure = null;
@@ -276,6 +277,8 @@ namespace VMATTBIautoPlan
             //logic to hide or show the flash option in GUI
             if (flash_chkbox.IsChecked.Value)
             {
+                flash_legs_chkbox.Visibility = Visibility.Visible;
+                flash_legs_label.Visibility = Visibility.Visible;
                 flashOption.Visibility = Visibility.Visible;
                 flashMarginLabel.Visibility = Visibility.Visible;
                 flashMarginTB.Visibility = Visibility.Visible;
@@ -287,6 +290,8 @@ namespace VMATTBIautoPlan
             }
             else
             {
+                flash_legs_chkbox.Visibility = Visibility.Hidden;
+                flash_legs_label.Visibility = Visibility.Hidden;
                 flashOption.Visibility = Visibility.Hidden;
                 flashMarginLabel.Visibility = Visibility.Hidden;
                 flashMarginTB.Visibility = Visibility.Hidden;
@@ -296,6 +301,7 @@ namespace VMATTBIautoPlan
                     flashVolume.Visibility = Visibility.Hidden;
                 }
             }
+            useFlashlegs = flash_legs_chkbox.IsChecked.Value;
             //update whether the user wants to user flash or not
             useFlash = flash_chkbox.IsChecked.Value;
         }
@@ -681,7 +687,7 @@ namespace VMATTBIautoPlan
             VMATTBIautoPlan.generateTS generate;
             //overloaded constructor depending on if the user requested to use flash or not. If so, pass the relevant flash parameters to the generateTS class
             if (!useFlash) generate = new VMATTBIautoPlan.generateTS(structureSpareList, selectedSS, targetMargin, sclero_chkbox.IsChecked.Value);
-            else generate = new VMATTBIautoPlan.generateTS(structureSpareList, selectedSS, targetMargin, sclero_chkbox.IsChecked.Value, useFlash, flashStructure, flashMargin);
+            else generate = new VMATTBIautoPlan.generateTS(structureSpareList, selectedSS, targetMargin, sclero_chkbox.IsChecked.Value, useFlash, useFlashlegs, flashStructure, flashMargin);
             pi.BeginModifications();
             if (generate.generateStructures()) return;
             //does the structure sparing list need to be updated? This occurs when structures the user elected to spare with option of 'Mean Dose < Rx Dose' are high resolution. Since Eclipse can't perform

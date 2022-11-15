@@ -48,6 +48,7 @@ namespace VMATTBIautoPlan
         private double targetMargin;
         private bool scleroTrial;
         private bool useFlash = false;
+        private bool useFlashLegs = false;
         private Structure flashStructure = null;
         private double flashMargin;
         public bool updateSparingList = false;
@@ -71,7 +72,18 @@ namespace VMATTBIautoPlan
             flashStructure = fSt;
             flashMargin = fM;
         }
-
+        public generateTS(List<Tuple<string, string, double>> list, StructureSet ss, double tm, bool st, bool flash, bool flash_legs, Structure fSt, double fM)
+        {
+            //overloaded constructor for the case where the user wants to include flash in the simulation
+            spareStructList = list;
+            selectedSS = ss;
+            targetMargin = tm;
+            scleroTrial = st;
+            useFlash = flash;
+            flashStructure = fSt;
+            flashMargin = fM;
+            useFlashLegs = flash_legs;
+        }
         public bool generateStructures()
         {
             isoNames.Clear();
@@ -161,6 +173,12 @@ namespace VMATTBIautoPlan
                 isoNames.Add("AP / PA upper legs");
                 if (numIsos == numVMATIsos + 2) isoNames.Add("AP / PA lower legs");
             }
+            //if (numIsos > numVMATIsos)
+            //{
+            //    isoNames.Add("Leg_Upper"); isoNames.Add("Leg_Lower");
+            //    numIsos = numVMATIsos + 2;
+            //    numVMATIsos += 2;
+            //}
 
             //check if selected structures are empty or of high-resolution (i.e., no operations can be performed on high-resolution structures)
             string output = "The following structures are high-resolution:" + System.Environment.NewLine;
@@ -550,7 +568,14 @@ namespace VMATTBIautoPlan
                 //dummy box structure should still exist in the structure set (createTSStructures method does not delete dummy box if the user wants to include flash in the simulation)
                 if (selectedSS.Structures.Where(x => x.Id.ToLower() == "ts_legs_flash").Any()) selectedSS.RemoveStructure(selectedSS.Structures.First(x => x.Id.ToLower() == "ts_legs_flash"));
                 Structure legs_flash = selectedSS.AddStructure("CONTROL", "TS_LEGS_FLASH");
-                legs_flash.SegmentVolume = dummyBox.And(ptv_flash.Margin(0.0));
+                if (useFlashLegs)
+                {
+                    legs_flash.SegmentVolume = dummyBox.And(ptv_flash.Margin(-targetMargin * 10));
+                }
+                else
+                {
+                    legs_flash.SegmentVolume = dummyBox.And(ptv_flash.Margin(0.0));
+                }
 
                 //same deal as generating ts_ptv_vmat
                 ptv_flash.SegmentVolume = ptv_flash.Sub(dummyBox.Margin(0.0));
